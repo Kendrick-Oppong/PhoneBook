@@ -78,6 +78,9 @@
         {{ getErrorMessage("confirm_password") }}
       </small>
     </div>
+
+    <app-oauth />
+
     <div class="!mt-10">
       <button
         type="submit"
@@ -96,8 +99,7 @@
       </button>
       <p class="my-3 text-base text-center">
         Already have an account?
-        <span class="font-medium underline text-primary"
-          >
+        <span class="font-medium underline text-primary">
           <a routerLink="/sign-in" ariaCurrentWhenActive="page">Sign in</a>
         </span>
       </p>

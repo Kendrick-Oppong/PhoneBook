@@ -5,10 +5,18 @@ import { RouterLink, Router } from '@angular/router';
 import { SignInDataType } from '@app/interface';
 import { AuthService } from '@app/services/auth/auth.service';
 import { FormValidationService } from '@app/services/form/form-validation.service';
+import { ToastrService } from 'ngx-toastr';
+import { OauthComponent } from '@components/Oauth/oauth.component';
 
 @Component({
   selector: 'app-sign-in',
-  imports: [NgOptimizedImage, ReactiveFormsModule, CommonModule, RouterLink],
+  imports: [
+    NgOptimizedImage,
+    ReactiveFormsModule,
+    CommonModule,
+    RouterLink,
+    OauthComponent,
+  ],
   templateUrl: './sign-in.component.html',
 })
 export class SignInComponent {
@@ -18,6 +26,7 @@ export class SignInComponent {
   );
   private readonly authService: AuthService = inject(AuthService);
   private readonly router: Router = inject(Router);
+  private readonly toast: ToastrService = inject(ToastrService);
 
   isFormSubmitted = false;
   isLoading = false;
@@ -47,14 +56,16 @@ export class SignInComponent {
       this.isLoading = true;
       this.authService
         .signIn(this.signInForm.value as SignInDataType)
-        .subscribe({
-          next: () => {
+        .subscribe((data) => {
+          if (data.error) {
             this.isLoading = false;
-            this.router.navigate(['/dashboard']);
-          },
-          error: () => {
+            console.log('login error', data.error.message);
+            this.toast.error(data.error.message);
+          }
+          if (data.data?.user) {
             this.isLoading = false;
-          },
+            // this.router.navigate(['/dashboard']);
+          }
         });
     }
   }
