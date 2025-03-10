@@ -1,25 +1,26 @@
-import { afterNextRender, Injectable } from '@angular/core';
+import { afterNextRender, inject, Injectable } from '@angular/core';
 import { SignUpDataType, SignInDataType } from '@app/interface';
-import { from, map, Observable, of, switchMap, throwError } from 'rxjs';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 import {
   AuthResponse,
-  createClient,
-  OAuthResponse,
-  SupabaseClient,
+  createClient,  SupabaseClient,
   User,
 } from '@supabase/supabase-js';
 import { environment } from '@environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  supabase: SupabaseClient | null = null;
-
+  supabase!: SupabaseClient | null ;
+  private readonly currentUser = new BehaviorSubject<User |  null>(null);
+  router: Router = inject(Router);
   constructor() {
     afterNextRender(() => {
       this.initialize();
     });
+     
   }
 
   initialize() {
@@ -27,6 +28,18 @@ export class AuthService {
       environment.supabaseUrl,
       environment.supabaseKey
     );
+     this.supabase?.auth.onAuthStateChange((event, session) => {
+       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+         console.log('SET USER');
+         console.log(session!.user);
+         this.currentUser.next(session!.user);
+       } else {
+         this.currentUser.next(null);
+       }
+     });
+
+  
+    this.loadUser();
   }
 
   public signUp(signUpData: SignUpDataType): Observable<AuthResponse> {
@@ -43,54 +56,6 @@ export class AuthService {
     return from(signUpPromise!);
   }
 
-  public createUser(authUser: User | null): Observable<any> {
-    if (!authUser) {
-      return throwError(() => new Error('No auth user provided.'));
-    }
-
-    const { id: authUserId, email } = authUser;
-
-    //  Query the database to check if the user already exists
-    const checkUserExistsPromise = this.supabase
-      ?.from('users')
-      .select('auth_user_id, email')
-      .or(`auth_user_id.eq.${authUserId},email.eq.${email}`)
-      .limit(1);
-
-    if (!checkUserExistsPromise) {
-      return throwError(() => new Error('Supabase client is not initialized.'));
-    }
-    return from(checkUserExistsPromise).pipe(
-      switchMap((checkResult) => {
-        if (checkResult.error) {
-          return throwError(() => checkResult.error);
-        }
-
-        // If the user doesn't exist, insert the new user
-        if (checkResult.data.length === 0) {
-          const createUserPromise = this.supabase?.from('users').insert([
-            {
-              auth_user_id: authUser.id,
-              email: authUser.email,
-              username: authUser.user_metadata['username'] || '',
-            },
-          ]);
-
-          return from(createUserPromise!).pipe(
-            map((createResult) => {
-              if (createResult.error) {
-                return { error: createResult.error, data: null };
-              }
-              return { error: null, data: createResult.data };
-            })
-          );
-        } else {
-          return of({ error: null, data: 'User already exists.' });
-        }
-      })
-    );
-  }
-
   public signIn(signInData: SignInDataType): Observable<AuthResponse> {
     const promise = this.supabase?.auth.signInWithPassword({
       email: signInData.email.toLocaleLowerCase(),
@@ -101,38 +66,36 @@ export class AuthService {
     return from(promise!);
   }
 
-  public signInWithSocialAuth(
-    provider: 'google' | 'github'
-  ): Observable<OAuthResponse> {
-    const signInPromise = this.supabase?.auth.signInWithOAuth({
+  public async signInWithSocialAuth(provider: 'google' | 'github') {
+    await this.supabase?.auth.signInWithOAuth({
       provider,
       options: {
         redirectTo: `http://localhost:4200`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
       },
     });
-
-    return from(signInPromise!);
-
-    // return from(signInPromise!).pipe(
-    //   switchMap((signInResult) => {
-    //     if (signInResult.error) {
-    //       return throwError(() => signInResult.error);
-    //     }
-
-    //     //  User is authenticated, now call createUser
-    //     const user = signInResult.data?.user;
-
-    //     if (user) {
-    //       return this.createUser(user);
-    //     } else {
-    //       return of({
-    //         error: 'No user information found after OAuth sign-in.',
-    //         data: null,
-    //       });
-    //     }
-    //   })
-    // );
   }
 
+  getCurrentUser(): Observable<User | boolean | null> {
+    return this.currentUser.asObservable();
+  }
+
+  async loadUser() {
+    if (this.currentUser.value) {
+      // User is already set, no need to do anything else
+      return;
+    }
+    const user = await this.supabase?.auth.getUser();
+
+    if (user?.data.user) {
+      console.log('user.data.user', user.data.user);
+      this.currentUser.next(user.data.user);
+    } else {
+      this.currentUser.next(null);
+    }
+  }
   // public signOut() {}
 }

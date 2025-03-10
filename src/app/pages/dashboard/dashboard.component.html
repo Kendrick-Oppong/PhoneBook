@@ -1,1 +1,98 @@
-<p>dasboard works!</p>
+<main class="grid grid-cols-[15%_1fr] min-h-dvh">
+  <div class="flex flex-col h-full p-5">
+    <h1 class="flex items-center gap-2 font-medium text-primary">
+      <lucide-icon [img]="icons.LayoutDashboard" />
+      Dashboard
+    </h1>
+    <ul
+      class="mt-10 space-y-5 [&>li]:flex [&>li]:gap-2 [&>li]:items-center [&>li]:cursor-pointer font-medium"
+    >
+      <li>
+        <lucide-icon [img]="icons.Contact" />
+        <p class="hover:text-primary">Contacts</p>
+      </li>
+      <li>
+        <lucide-icon [img]="icons.Heart" />
+        <p class="hover:text-primary">Favorites</p>
+      </li>
+      <li>
+        <lucide-icon class="animate-slow-spin" [img]="icons.Settings" />
+        <p class="hover:text-primary">Settings</p>
+      </li>
+    </ul>
+    <div class="flex items-center gap-4 mt-auto">
+      <img
+        class="w-8 h-8 p-1 rounded-full ring-2 ring-primary"
+        src="https://avatar.vercel.sh/rauchg?rounded=8"
+        alt="Bordered avatar"
+      />
+      <div class="font-medium">
+        <div>Jesse Leos</div>
+      </div>
+    </div>
+  </div>
+  <section class="p-5 border-l border-gray-400 bg-secondary/10">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold">Contacts</h1>
+        <p class="text-base">
+          Showing <span class="font-semibold text-primary"> 12</span> out of
+          <span class="font-semibold text-destructive">22</span> contacts
+        </p>
+      </div>
+      <div class="flex items-center justify-between gap-5">
+        <input
+          type="search"
+          pInputText
+          [(ngModel)]="searchTerm"
+          placeholder="Search by name"
+          class="w-[300px]"
+        />
+        <p class="p-2 rounded-lg bg-primary/20">
+          <lucide-icon class="text-primary" [img]="icons.Menu" />
+        </p>
+        <p class="p-2 rounded-lg bg-primary/20">
+          <lucide-icon class="text-primary" [img]="icons.Grip" />
+        </p>
+        <p-button label="New Contact">
+          <lucide-icon [img]="icons.UserPlus" />
+        </p-button>
+      </div>
+    </div>
+    <div class="mt-10">
+      <div class="p-4 space-y-3 bg-white border rounded-lg shadow-md w-fit">
+        <div class="space-y-1 text-center">
+          <div class="relative">
+            <img
+              ngSrc="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+              class="mx-auto rounded-lg"
+              width="200"
+              height="200"
+              alt=""
+            />
+            <lucide-icon
+              size="25"
+              class="absolute top-0 cursor-pointer -right-1 text-primary"
+              [img]="icons.EllipsisVertical"
+            />
+          </div>
+          <h1 class="text-xl font-semibold">Angela Moss</h1>
+          <p>Marketing Manager</p>
+          <p class="italic text-primary">&#64; HighSpeed Studios</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <p class="p-2 rounded-lg bg-primary/20">
+            <lucide-icon size="20" class="text-primary" [img]="icons.Phone" />
+          </p>
+          <p class="font-semibold">+12 345 6789 0</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <p class="p-2 rounded-lg bg-primary/20">
+            <lucide-icon size="20" class="text-primary" [img]="icons.Mail" />
+          </p>
+          <p class="font-semibold">angelamoss&#64;mail.com</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

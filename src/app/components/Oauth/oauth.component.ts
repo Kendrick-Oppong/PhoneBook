@@ -11,7 +11,7 @@ export class OauthComponent {
   public handleGoogleAuth() {
     this.authService.signInWithSocialAuth('google');
   }
-  public handleGitHubAuth() {
-    this.authService.signInWithSocialAuth('github');
+  public async handleGitHubAuth() {
+    await this.authService.signInWithSocialAuth('github');
   }
 }

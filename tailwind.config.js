@@ -37,8 +37,10 @@ module.exports = {
       fontFamily: {
         sans: ["Bai Jamjuree", "serif"],
       },
+      animation: {
+        "slow-spin": "spin 5s linear infinite", 
+      },
     },
   },
   plugins: [require("tailwindcss-animated"), require("tailwindcss-primeui")],
-  
 };

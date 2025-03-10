@@ -28,20 +28,37 @@
     </div>
     <div>
       <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        formControlName="password"
-        [ngClass]="{ 'border border-destructive': isFieldError('password') }"
-        name="password"
-        placeholder="Choose a unique password (min 6 characters)"
-      />
+      <div class="relative">
+        <input
+          [type]="showPassword() ? 'text' : 'password'"
+          id="password"
+          formControlName="password"
+          [ngClass]="{ 'border border-destructive': isFieldError('password') }"
+          name="password"
+          placeholder="Choose a unique password (min 6 characters)"
+        />
+       @if(showPassword()){
+        <lucide-icon
+          (click)="togglePasswordView()"
+          strokeWidth="1"
+          [img]="icons.EyeOff"
+          class="absolute right-2 top-1"
+        />
+        }@else {
+        <lucide-icon
+          (click)="togglePasswordView()"
+          strokeWidth="1"
+          [img]="icons.Eye"
+          class="absolute right-2 top-1"
+        />
+        }
+      </div>
       <small *ngIf="isFieldError('password')" class="text-destructive">
         {{ getErrorMessage("password") }}
       </small>
     </div>
 
-    <app-oauth />
+    <!-- <app-oauth /> -->
     <div class="!mt-10">
       <button
         type="submit"

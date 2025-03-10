@@ -1,26 +1,36 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { SignUpDataType } from '@app/interface';
 import { AuthService } from '@app/services/auth/auth.service';
 import { FormValidationService } from '@app/services/form/form-validation.service';
 import { ToastrService } from 'ngx-toastr';
-import { OauthComponent } from "@components/Oauth/oauth.component";
+import { OauthComponent } from '@components/Oauth/oauth.component';
+import { Eye, LucideAngularModule, EyeOff } from 'lucide-angular';
 @Component({
   selector: 'app-sign-up',
-  imports: [NgOptimizedImage, ReactiveFormsModule, CommonModule, RouterLink, OauthComponent],
+  imports: [
+    NgOptimizedImage,
+    ReactiveFormsModule,
+    CommonModule,
+    RouterLink,
+    OauthComponent,
+    LucideAngularModule,
+  ],
   templateUrl: './sign-up.component.html',
 })
-export class SignUpComponent {
+export class SignUpComponent implements OnInit {
   private readonly fb: FormBuilder = inject(FormBuilder);
   private readonly authService: AuthService = inject(AuthService);
   private readonly validationService: FormValidationService = inject(
     FormValidationService
   );
   private readonly toast: ToastrService = inject(ToastrService);
+  private readonly router: Router = inject(Router);
+  readonly icons = { Eye, EyeOff };
 
-  // private readonly router: Router = inject(Router);
+  public showPassword = signal(false);
 
   isFormSubmitted = false;
   isLoading = false;
@@ -49,6 +59,10 @@ export class SignUpComponent {
     return this.validationService.getErrorMessage(this.signUpForm, field);
   }
 
+  togglePasswordView() {
+    this.showPassword.update((prev) => !prev);
+  }
+
   onSubmit(): void {
     this.isFormSubmitted = true;
     if (this.signUpForm.valid) {
@@ -64,10 +78,17 @@ export class SignUpComponent {
           }
           if (data.data) {
             this.isLoading = false;
-            // this.authService.createUser(data.data.user)
-            // this.router.navigate(['/sign-in']);
+            this.router.navigate(['/sign-in']);
           }
         });
     }
+  }
+
+  ngOnInit(): void {
+    this.authService.getCurrentUser().subscribe((user) => {
+      if (user) {
+        this.router.navigate(['/dashboard']);
+      }
+    });
   }
 }

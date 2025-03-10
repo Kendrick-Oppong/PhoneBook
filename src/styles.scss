@@ -82,10 +82,17 @@
 
   input,
   button {
-    @apply h-11 rounded-md border focus:border-2 border-primary outline-none px-3 w-full;
+    @apply h-11 rounded-md border focus:border-2 border-primary outline-none px-3;
+  }
+  input {
+    @apply w-full;
   }
   select {
     @apply h-11 outline-none;
+  }
+
+  li {
+    @apply list-none;
   }
 }
 
@@ -93,6 +100,8 @@
   .linkActive {
     @apply text-primary hover:underline decoration-2 underline-offset-4;
   }
+
+
 
   .bg-linear {
     background-image: linear-gradient(
