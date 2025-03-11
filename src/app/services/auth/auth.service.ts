@@ -3,7 +3,8 @@ import { SignUpDataType, SignInDataType } from '@app/interface';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import {
   AuthResponse,
-  createClient,  SupabaseClient,
+  createClient,
+  SupabaseClient,
   User,
 } from '@supabase/supabase-js';
 import { environment } from '@environments/environment';
@@ -13,14 +14,13 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class AuthService {
-  supabase!: SupabaseClient | null ;
-  private readonly currentUser = new BehaviorSubject<User |  null>(null);
+  supabase!: SupabaseClient | null;
+  readonly currentUser = new BehaviorSubject<User | null>(null);
   router: Router = inject(Router);
   constructor() {
     afterNextRender(() => {
       this.initialize();
     });
-     
   }
 
   initialize() {
@@ -28,17 +28,15 @@ export class AuthService {
       environment.supabaseUrl,
       environment.supabaseKey
     );
-     this.supabase?.auth.onAuthStateChange((event, session) => {
-       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-         console.log('SET USER');
-         console.log(session!.user);
-         this.currentUser.next(session!.user);
-       } else {
-         this.currentUser.next(null);
-       }
-     });
+    this.supabase?.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        // console.log(session!.user);
+        this.currentUser.next(session!.user);
+      } else {
+        this.currentUser.next(null);
+      }
+    });
 
-  
     this.loadUser();
   }
 
@@ -61,7 +59,7 @@ export class AuthService {
       email: signInData.email.toLocaleLowerCase(),
       password: signInData.password,
     });
-    console.log(promise?.then((data) => data));
+    // console.log(promise?.then((data) => data));
 
     return from(promise!);
   }
@@ -79,7 +77,7 @@ export class AuthService {
     });
   }
 
-  getCurrentUser(): Observable<User | boolean | null> {
+  getCurrentUser(): Observable<User | null> {
     return this.currentUser.asObservable();
   }
 
@@ -91,7 +89,7 @@ export class AuthService {
     const user = await this.supabase?.auth.getUser();
 
     if (user?.data.user) {
-      console.log('user.data.user', user.data.user);
+      // console.log('user.data.user', user.data.user);
       this.currentUser.next(user.data.user);
     } else {
       this.currentUser.next(null);

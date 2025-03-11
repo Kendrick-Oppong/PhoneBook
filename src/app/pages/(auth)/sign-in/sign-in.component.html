@@ -37,7 +37,7 @@
           name="password"
           placeholder="Choose a unique password (min 6 characters)"
         />
-       @if(showPassword()){
+        @if(showPassword()){
         <lucide-icon
           (click)="togglePasswordView()"
           strokeWidth="1"
@@ -62,7 +62,7 @@
     <div class="!mt-10">
       <button
         type="submit"
-        class="flex items-center justify-center gap-2 text-white bg-primary hover:bg-primary/80 disabled:opacity-50"
+        class="flex items-center justify-center w-full gap-2 text-white bg-primary hover:bg-primary/80 disabled:opacity-50"
         [disabled]="isLoading"
       >
         <ng-container *ngIf="isLoading; else signInText">
