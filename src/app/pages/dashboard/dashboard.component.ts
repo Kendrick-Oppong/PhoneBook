@@ -1,4 +1,4 @@
-import {Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   LucideAngularModule,
@@ -9,21 +9,19 @@ import {
   Grip,
   Menu,
   UserPlus,
-  Phone,
-  Mail,
-  EllipsisVertical,
 } from 'lucide-angular';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { AsyncPipe, NgOptimizedImage } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ContactsService } from '@app/services/contacts/contacts.service';
 import { ContactType } from '@app/interface';
 import { LoaderComponent } from '@components/loader/loader.component';
 import { AuthService } from '@app/services/auth/auth.service';
 import { PostgrestSingleResponse, User } from '@supabase/supabase-js';
 import { Observable } from 'rxjs';
-
+import { ContactCardComponent } from '@components/contact-card/contact-card.component';
+import { ContactFilterPipe } from '@app/pipes/contact-filter.pipe';
 @Component({
   selector: 'app-dashboard',
   imports: [
@@ -31,9 +29,10 @@ import { Observable } from 'rxjs';
     FormsModule,
     InputTextModule,
     ButtonModule,
-    NgOptimizedImage,
     LoaderComponent,
     AsyncPipe,
+    ContactCardComponent,
+    ContactFilterPipe,
   ],
   templateUrl: './dashboard.component.html',
 })
@@ -46,11 +45,8 @@ export class DashboardComponent implements OnInit {
     Grip,
     Menu,
     UserPlus,
-    Phone,
-    Mail,
-    EllipsisVertical,
   };
-  searchTerm = '';
+  filterTerm = '';
 
   contacts$: Observable<PostgrestSingleResponse<ContactType[]> | null> =
     this.contactsService.getAllContacts();
@@ -65,7 +61,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadContacts();
-    console.log('this.searchTerm', this.searchTerm);
+    console.log('this.searchTerm', this.filterTerm);
   }
 
   loadContacts(): void {
@@ -92,6 +88,6 @@ export class DashboardComponent implements OnInit {
   }
 
   onSearch() {
-    console.log('this.searchTerm', this.searchTerm);
+    console.log('this.searchTerm', this.filterTerm);
   }
 }

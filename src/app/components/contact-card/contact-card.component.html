@@ -1,0 +1,46 @@
+<div class="p-4 space-y-3 bg-white border rounded-lg shadow-md">
+  <div class="space-y-1 text-center">
+    <div class="relative">
+      <img
+        [ngSrc]="contact().profile_image"
+        class="object-cover mx-auto rounded-lg aspect-square"
+        width="150"
+        height="150"
+        priority
+        alt=""
+      />
+      <div class="absolute top-0 space-y-2 cursor-pointer -right-1">
+        <lucide-icon
+          size="22"
+          class="cursor-pointer text-destructive"
+          [img]="icons.Heart"
+        />
+        <lucide-icon
+          size="22"
+          class="my-2 cursor-pointer text-primary"
+          [img]="icons.Pencil"
+        />
+        <lucide-icon
+          size="22"
+          class="cursor-pointer text-destructive"
+          [img]="icons.Trash2"
+        />
+      </div>
+    </div>
+    <h1 class="text-xl font-semibold">{{ contact().name }}</h1>
+    <p>{{ contact().position }}</p>
+    <p class="italic text-primary">&#64; {{ contact().company }}</p>
+  </div>
+  <div class="flex items-center gap-3">
+    <p class="p-2 rounded-lg bg-primary/20">
+      <lucide-icon size="20" class="text-primary" [img]="icons.Phone" />
+    </p>
+    <p class="font-semibold">{{ contact().contact_info.phone }}</p>
+  </div>
+  <div class="flex items-center gap-3">
+    <p class="p-2 rounded-lg bg-primary/20">
+      <lucide-icon size="20" class="text-primary" [img]="icons.Mail" />
+    </p>
+    <p class="font-semibold">{{ contact().email }}</p>
+  </div>
+</div>
